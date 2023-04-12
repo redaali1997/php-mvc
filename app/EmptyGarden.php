@@ -4,8 +4,8 @@ namespace App;
 
 class EmptyGarden
 {
-    private $width;
-    private $heigth;
+    protected $width;
+    protected $heigth;
 
     public function __construct($width, $heigth)
     {

@@ -10,6 +10,7 @@
                         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                         <a href="/" class="<?= currentUrl('/') ?> rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Home</a>
                         <a href="/dashboard" class="<?= currentUrl('/dashboard') ?> rounded-md px-3 py-2 text-sm font-medium">Dashboard</a>
+                        <a href="/notes" class="<?= currentUrl('/notes') ?> rounded-md px-3 py-2 text-sm font-medium">Notes</a>
                         <a href="/about" class="<?= currentUrl('/about') ?> rounded-md px-3 py-2 text-sm font-medium">About us</a>
                     </div>
                 </div>

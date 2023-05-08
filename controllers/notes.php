@@ -6,6 +6,6 @@ $config = require './config.php';
 // Database
 $db = new Database($config['database'], 'root', 'password');
 
-$notes = $db->query("SELECT * FROM notes")->fetchAll();
+$notes = $db->query("SELECT * FROM notes")->get();
 
 require './views/notes.view.php';

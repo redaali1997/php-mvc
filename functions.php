@@ -18,3 +18,18 @@ function asset($path)
 {
     return __DIR__ . '/public/assets/' . $path;
 }
+
+function abort($status = Response::NOT_FOUND)
+{
+    http_response_code($status);
+
+    require "./views/{$status}.view.php";
+
+    die();
+}
+
+function authorize($condition, $status)
+{
+    if (!$condition)
+        abort($status);
+}

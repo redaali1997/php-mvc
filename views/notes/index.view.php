@@ -1,7 +1,7 @@
-<?php require "partials/head.php" ?>
-<?php require "partials/nav.php" ?>
+<?php require "views/partials/head.php" ?>
+<?php require "views/partials/nav.php" ?>
 
-<?php require "partials/header.php" ?>
+<?php require "views/partials/header.php" ?>
 
 <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
@@ -15,7 +15,9 @@
                 </li>
             <?php endforeach ?>
         </ul>
+
+        <a href="/notes/create" class="bg-blue-500 text-white py-2 px-4 round my-4">Add a Note</a>
     </div>
 </main>
 
-<?php require "partials/foot.php" ?>
+<?php require "views/partials/foot.php" ?>

@@ -10,4 +10,4 @@ $note = $db->query("SELECT * FROM notes WHERE id = ?", [$_GET['id']])->findOrFai
 
 authorize($note['user_id'] === 1, Response::FORBIDDEN);
 
-require './views/note.view.php';
+require './views/notes/show.view.php';

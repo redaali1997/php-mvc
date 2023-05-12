@@ -1,3 +1,3 @@
 <?php
 $heading = 'Home';
-require "./views/home.view.php";
+require base_path('views/home.view.php');

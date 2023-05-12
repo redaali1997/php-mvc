@@ -1,7 +1,7 @@
 <?php
-require "views/partials/head.php";
-require "views/partials/nav.php";
-require "views/partials/header.php";
+view('partials/head.php');
+view('partials/nav.php');
+view('partials/header.php', ['heading' => $heading]);
 ?>
 <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
@@ -18,4 +18,4 @@ require "views/partials/header.php";
     </div>
 </main>
 
-<?php require "views/partials/foot.php" ?>
+<?php view('partials/foot.php') ?>

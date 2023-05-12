@@ -1,5 +1,7 @@
 <?php
 
+use Core\Response;
+
 function dd($var)
 {
     echo '<pre>';
@@ -23,7 +25,7 @@ function abort($status = Response::NOT_FOUND)
 {
     http_response_code($status);
 
-    require "./views/{$status}.view.php";
+    view("{$status}.view.php");
 
     die();
 }
@@ -32,4 +34,15 @@ function authorize($condition, $status)
 {
     if (!$condition)
         abort($status);
+}
+
+function base_path($path)
+{
+    return BASE_PATH . $path;
+}
+
+function view($path, $attributes = [])
+{
+    extract($attributes);
+    require base_path('views/') . $path;
 }

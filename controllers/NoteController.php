@@ -2,6 +2,8 @@
 
 namespace controllers;
 
+use Core\App;
+use Core\Container;
 use Core\Database;
 use Core\Response;
 
@@ -12,9 +14,7 @@ class NoteController
 
     public function __construct()
     {
-        $config = require base_path('config.php');
-
-        $this->db = new Database($config['database'], 'root', 'password');
+        $this->db = App::resolve(Database::class);
     }
 
     public function index()

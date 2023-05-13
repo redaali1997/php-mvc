@@ -3,8 +3,10 @@
 namespace controllers;
 
 use Core\Database;
+use Core\Response;
 
-class NoteController {
+class NoteController
+{
 
     protected $db;
 
@@ -23,5 +25,22 @@ class NoteController {
             'heading' => 'Notes',
             'notes' => $notes
         ]);
+    }
+
+    public function show()
+    {
+        $note = $this->db->query("SELECT * FROM notes WHERE id = ?", [$_GET['id']])->findOrFail();
+
+        authorize($note['user_id'] === 1, Response::FORBIDDEN);
+
+        return view('notes/show.view.php', [
+            'heading' => $note['note'],
+            'note' => $note
+        ]);
+    }
+
+    public function create()
+    {
+        return view('notes/create.view.php', ['heading' => 'Note Creating']);
     }
 }

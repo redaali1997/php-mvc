@@ -7,26 +7,25 @@ class Router
 
     protected $routes = [];
 
-    public function add($method, $uri, $controller, $action)
+    public function add($method, $uri, $action)
     {
-        $this->routes[] = [
+        return $this->routes[] = [
             'uri' => $uri,
-            'controller' => $controller,
-            'action' => $action,
+            'controller' => is_array($action) ? $action[0] : null,
+            'action' => is_array($action) ? $action[1] : $action,
             'method' => $method
         ];
     }
 
     public function get($uri, $action)
     {
-        if (is_array($action))
-            $this->add('GET', $uri, $action[0], $action[1]);
+        $this->add('GET', $uri, $action);
     }
 
-    // public function post($uri, $controller)
-    // {
-    //     $this->add('POST', $uri, $controller);
-    // }
+    public function post($uri, $action)
+    {
+        $this->add('POST', $uri, $action);
+    }
 
     // public function delete($uri, $controller)
     // {
@@ -45,10 +44,12 @@ class Router
 
     public function route($uri, $method)
     {
-
         foreach ($this->routes as $route) {
             if ($uri === $route['uri'] && strtoupper($method) === $route['method']) {
-                return (new $route['controller'])->{$route['action']}();
+                if ($route['controller'])
+                    return (new $route['controller'])->{$route['action']}();
+                else
+                    call_user_func($route['action']);
             }
         }
 

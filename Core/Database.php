@@ -37,9 +37,14 @@ class Database
     {
         $result = $this->find();
 
-        if(!$result)
+        if (!$result)
             abort(404);
 
         return $result;
+    }
+
+    public function exists()
+    {
+        return !empty($this->find());
     }
 }

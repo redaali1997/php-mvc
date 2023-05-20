@@ -4,15 +4,70 @@ namespace Core;
 
 class Validator
 {
-    public static function string($value, $min = 1, $max = INF)
+    public static function make($data, $rules)
     {
-        $value = trim($value);
+        $errors = [];
+        foreach ($rules as $field => $value) {
+            if (array_key_exists($field, $data)) {
+                foreach ($value as $rule) {
+                    $rule = explode(':', $rule);
+                    $rule_name = $rule[0];
+                    $result = static::$rule_name($field, $data[$field], $rule[1] ?? null);
+                    if (is_string($result)) {
+                        $errors[$field] = $result;
+                    }
+                }
+            } else {
+                return $field . ' field doesn\'t exist.';
+            }
+        }
 
-        return strlen($value) > $min && strlen($value) <= $max;
+        return $errors;
     }
 
-    public static function email($valie)
+    public static function unique($field, $value, $option)
     {
-        return filter_var($valie, FILTER_VALIDATE_EMAIL);
+        $db = App::resolve(Database::class);
+
+        $option = explode(',', $option);
+
+        $record = $db->query("SELECT * from $option[0] where $field = '$value'")->exists();
+        
+        if($record)
+            return "Field $field must be unique";
+
+        return true;
+    }
+
+    public static function required($field, $value)
+    {
+        if (empty(trim($value)))
+            return "Field " . $field . ' is required';
+
+        return true;
+    }
+
+    public static function string($field, $value)
+    {
+        if(!is_string($value))
+            return "Field $field must be string";
+
+        return true;
+    }
+
+    public static function email($field, $value)
+    {
+        if(!filter_var($value, FILTER_VALIDATE_EMAIL))
+            return "Field $field must be email";
+
+        return true;
+    }
+
+    public static function numeric($field, $value)
+    {
+        if(!is_int($value) && !is_float($value))
+            return "Field $field must be numeric";
+
+        return true;
     }
 }

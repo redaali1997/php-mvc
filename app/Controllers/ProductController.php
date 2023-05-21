@@ -3,7 +3,10 @@
 namespace app\Controllers;
 
 use app\Models\Product;
+use app\Models\Type;
 use app\Repositories\ProductRepository;
+use Core\App;
+use Core\Database;
 use Core\Validator;
 
 class ProductController
@@ -27,8 +30,9 @@ class ProductController
 
     public function create()
     {
-        dd('dd');
-        // return view('create.php');
+        $types = (new Type)->get();
+
+        return view('create', compact('types'));
     }
 
     public function store()
@@ -40,18 +44,13 @@ class ProductController
             'type_id' => ['required', 'numeric'],
         ];
 
-        $data = [
-            'sku' => 'test-create-2',
-            'name' => 'Test create 2',
-            'price' => 2,
-            'type_id' => 1,
-        ];
-
-        $validator = Validator::make($data, $rules);
-        dd($validator);
+        $validator = Validator::make($_POST, $rules);
+        
         if (empty($validator)) {
-            Product::save($data);
+            Product::save($_POST);
             return header('location: /', 200);
         }
+
+        dd($validator);
     }
 }

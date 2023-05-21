@@ -23,6 +23,7 @@ class Product
             from products p
             join types t
             on p.type_id = t.id
+            ORDER BY id desc
         ')->get();
 
         $collection = [];

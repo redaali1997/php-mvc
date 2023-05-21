@@ -32,8 +32,8 @@ class Validator
         $option = explode(',', $option);
 
         $record = $db->query("SELECT * from $option[0] where $field = '$value'")->exists();
-        
-        if($record)
+
+        if ($record)
             return "Field $field must be unique";
 
         return true;
@@ -49,7 +49,7 @@ class Validator
 
     public static function string($field, $value)
     {
-        if(!is_string($value))
+        if (!is_string($value))
             return "Field $field must be string";
 
         return true;
@@ -57,7 +57,7 @@ class Validator
 
     public static function email($field, $value)
     {
-        if(!filter_var($value, FILTER_VALIDATE_EMAIL))
+        if (!filter_var($value, FILTER_VALIDATE_EMAIL))
             return "Field $field must be email";
 
         return true;
@@ -65,7 +65,7 @@ class Validator
 
     public static function numeric($field, $value)
     {
-        if(!is_int($value) && !is_float($value))
+        if (!is_numeric($value))
             return "Field $field must be numeric";
 
         return true;

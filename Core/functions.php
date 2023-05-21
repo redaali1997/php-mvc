@@ -25,7 +25,7 @@ function abort($status = Response::NOT_FOUND)
 {
     http_response_code($status);
 
-    view("{$status}.view.php");
+    view($status);
 
     die();
 }
@@ -44,5 +44,5 @@ function base_path($path)
 function view($path, $attributes = [])
 {
     extract($attributes);
-    require base_path('views/') . $path;
+    require base_path('views/') . $path . '.view.php';
 }

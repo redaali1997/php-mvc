@@ -47,4 +47,9 @@ class Database
     {
         return !empty($this->find());
     }
+
+    public function lastInserted()
+    {
+        return $this->connection->lastInsertId();
+    }
 }

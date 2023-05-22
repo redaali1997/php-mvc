@@ -3,29 +3,23 @@
 namespace app\Controllers;
 
 use app\Models\Product;
+use app\Models\ProductTypeAttribute;
 use app\Models\Type;
-use app\Repositories\ProductRepository;
-use Core\App;
-use Core\Database;
 use Core\Validator;
 
 class ProductController
 {
-    protected $repository;
+    protected $product;
 
     public function __construct()
     {
-        $this->repository = new ProductRepository();
+        $this->product = new Product;
     }
 
     public function index()
     {
-        echo '<ul>';
-        foreach (Product::all() as $product) {
-            echo '<li>' . $product->id . ' - ' . $product->name . '</li>';
-        }
-        echo '</ul>';
-        // dd($this->repository->index());
+        $products = $this->product->get();
+        return view('home', compact('products'));
     }
 
     public function create()
@@ -42,12 +36,22 @@ class ProductController
             'name' => ['required', 'string'],
             'price' => ['required', 'numeric'],
             'type_id' => ['required', 'numeric'],
+            'attributes' => ['required', 'array']
         ];
 
         $validator = Validator::make($_POST, $rules);
-        
+
         if (empty($validator)) {
-            Product::save($_POST);
+            $attributes = $_POST['attributes'];
+            unset($_POST['attributes']);
+
+            $product = $this->product->save($_POST);
+
+            foreach ($attributes as $id => $value) (new ProductTypeAttribute)->save([
+                    'product_id' => $product->id,
+                    'attribute_id' => $id,
+                    'value' => $value
+                ]);
             return header('location: /', 200);
         }
 

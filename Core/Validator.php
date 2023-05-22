@@ -41,7 +41,7 @@ class Validator
 
     public static function required($field, $value)
     {
-        if (empty(trim($value)))
+        if (empty($value))
             return "Field " . $field . ' is required';
 
         return true;
@@ -67,6 +67,14 @@ class Validator
     {
         if (!is_numeric($value))
             return "Field $field must be numeric";
+
+        return true;
+    }
+
+    public static function array($field, $value)
+    {
+        if (!is_array($value))
+            return "Field $field must be array";
 
         return true;
     }

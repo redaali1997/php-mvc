@@ -23,7 +23,6 @@ class ProductRepository
             join types t
             on p.type_id = t.id
         ')->get();
-        dd($products);
 
         return $products;
     }

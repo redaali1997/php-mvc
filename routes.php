@@ -1,7 +1,9 @@
 <?php
 
+use app\Controllers\Api\TypeAttributeController;
 use app\Controllers\ProductController;
 
 $router->get('/', [ProductController::class, 'index']);
-$router->get('/products/create', [ProductController::class, 'create']);
+$router->get('/add-product', [ProductController::class, 'create']);
 $router->post('/products', [ProductController::class, 'store']);
+$router->get('/api/type-attributes', [TypeAttributeController::class, 'index']);

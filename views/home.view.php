@@ -16,8 +16,8 @@
                 <div class="border-3 border-red-800 p-2 text-center">
                     <p><?= $product->sku ?></p>
                     <p><?= $product->name ?></p>
-                    <p><?= $product->price ?></p>
-                    <p>Attribute***</p>
+                    <p><?= $product->price ?> $</p>
+                    <p><?= $product->attributes() ?></p>
                 </div>
             <?php endforeach ?>
         </div>

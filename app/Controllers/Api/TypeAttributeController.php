@@ -15,7 +15,8 @@ class TypeAttributeController
             {
                 $collection[$attribute->id] = [
                     'name' => $attribute->name,
-                    'type' => $attribute->field_type
+                    'type' => $attribute->field_type,
+                    'unit' => $attribute->unit
                 ];
             }
             echo json_encode($collection);

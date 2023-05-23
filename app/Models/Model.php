@@ -8,7 +8,7 @@ use Core\Database;
 class Model
 {
     protected $table;
-    protected $primary_key;
+    protected $primary_key = 'id';
     protected static $db;
     protected $data = [];
 

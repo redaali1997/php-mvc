@@ -18,7 +18,8 @@ class ProductController
 
     public function index()
     {
-        $products = $this->product->get();
+        $products = $this->product->withAttributes();
+
         return view('home', compact('products'));
     }
 
@@ -48,13 +49,16 @@ class ProductController
             $product = $this->product->save($_POST);
 
             foreach ($attributes as $id => $value) (new ProductTypeAttribute)->save([
-                    'product_id' => $product->id,
-                    'attribute_id' => $id,
-                    'value' => $value
-                ]);
+                'product_id' => $product->id,
+                'attribute_id' => $id,
+                'value' => $value
+            ]);
             return header('location: /', 200);
         }
+dd($validator);
+        $_SESSION['errors'] = $validator;
+        $_SESSION['data'] = $_POST;
 
-        dd($validator);
+        return header('location: /add-product', 200);
     }
 }

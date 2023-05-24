@@ -9,33 +9,28 @@ class Product extends Model
 
     public function withAttributes()
     {
-        $records = static::$db->query('
-            select p.id, p.sku , p.name, p.price, i.value, t.name attribute_name, t.unit
-            from products p
-            join product_type_attributes i
-            on p.id = i.product_id
-            join type_attributes t
-            on i.attribute_id = t.id;
-        ')->get();
+        $query = "
+            SELECT p.id, p.sku , p.name, p.price, i.value, t.name attribute_name, t.unit
+            FROM products p
+            JOIN product_type_attributes i ON p.id = i.product_id
+            JOIN type_attributes t ON i.attribute_id = t.id;
+        ";
+        $records = static::$db->query($query)->get();
 
         $collection = [];
         foreach ($records as $record) {
-            if (!array_key_exists($record['id'], $collection)) {
-                $product = new $this;
-                foreach ($record as $key => $value) {
-                    if ($key == 'attribute_name' || $key == 'value') {
-                        break;
-                    };
-                    $product->$key = $value;
-                }
+            $id = $record['id'];
+            if (!isset($collection[$id])) {
+                $product = $this->createInstanceFromRecord($record);
+
                 $product->attributes[] = [
                     'name' => $record['attribute_name'],
                     'value' => $record['value'],
                     'unit' => $record['unit']
                 ];
-                $collection[$record['id']] = $product;
+                $collection[$id] = $product;
             } else {
-                $collection[$record['id']]->attributes[] = [
+                $collection[$id]->attributes[] = [
                     'name' => $record['attribute_name'],
                     'value' => $record['value'],
                     'unit' => $record['unit']
@@ -47,12 +42,18 @@ class Product extends Model
 
     public function attributes()
     {
-        if (count($this->attributes) > 1) {
-            $values = array_map(fn ($attribute) => $attribute['value'], $this->attributes);
-            return 'Dimension: ' . implode('x', array_values($values));
+        $attributeCount = count($this->attributes);
+
+        if ($attributeCount > 1) {
+            $values = array_column($this->attributes, 'value');
+            return 'Dimension: ' . implode('x', $values);
         }
 
-        $attribute = $this->attributes[0];
-        return  $attribute['name'] . ': ' . $attribute['value'] . ' '. $attribute['unit'];
+        if ($attributeCount === 1) {
+            $attribute = $this->attributes[0];
+            return $attribute['name'] . ': ' . $attribute['value'] . ' ' . $attribute['unit'];
+        }
+
+        return '';
     }
 }

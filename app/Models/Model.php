@@ -8,7 +8,7 @@ use Core\Database;
 class Model
 {
     protected $table;
-    protected $primary_key = 'id';
+    protected $primaryKey = 'id';
     protected static $db;
     protected $data = [];
 
@@ -20,12 +20,11 @@ class Model
     public function get()
     {
         $collection = [];
-        $records = static::$db->query("SELECT * from {$this->table}")->get();
+        $query = "SELECT * FROM {$this->table}";
+        $records = static::$db->query($query)->get();
+
         foreach ($records as $record) {
-            $instance = new $this;
-            foreach ($record as $key => $value) {
-                $instance->$key = $value;
-            }
+            $instance = $this->createInstanceFromRecord($record);
             $collection[] = $instance;
         }
 
@@ -34,33 +33,31 @@ class Model
 
     public function find($id)
     {
-        $record = static::$db->query("SELECT * from {$this->table} WHERE {$this->primary_key} = {$id}")->find();
-        $instance = new $this;
-        foreach ($record as $key => $value)
-            $instance->$key = $value;
+        $query = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = ?";
+        $record = static::$db->query($query, [$id])->find();
 
-        return $instance;
+        if (!$record)
+            return false;
+
+        return $this->createInstanceFromRecord($record);
     }
 
     public function findWhere($column, $value)
     {
-        $record = static::$db->query("SELECT * from {$this->table} WHERE {$column} = {$value}")->find();
-        $instance = new $this;
-        foreach ($record as $key => $value)
-            $instance->$key = $value;
+        $query = "SELECT * FROM {$this->table} WHERE {$column} = ?";
+        $record = static::$db->query($query, [$value])->find();
 
-        return $instance;
+        return $this->createInstanceFromRecord($record);
     }
 
     public function findAllWhere($column, $value)
     {
         $collection = [];
-        $records = static::$db->query("SELECT * from {$this->table} WHERE {$column} = {$value}")->get();
+        $query = "SELECT * FROM {$this->table} WHERE {$column} = ?";
+        $records = static::$db->query($query, [$value])->get();
+
         foreach ($records as $record) {
-            $instance = new $this;
-            foreach ($record as $key => $value) {
-                $instance->$key = $value;
-            }
+            $instance = $this->createInstanceFromRecord($record);
             $collection[] = $instance;
         }
 
@@ -71,24 +68,39 @@ class Model
     {
         $columns = implode(',', array_keys($data));
         $values = implode(',', array_fill(0, count($data), '?'));
-        $id = static::$db
-            ->query("INSERT INTO {$this->table}({$columns}) VALUES ({$values})", array_values($data))
-            ->lastInserted();
+        $query = "INSERT INTO {$this->table} ({$columns}) VALUES ({$values})";
+        $params = array_values($data);
 
-        $record = static::$db->query("SELECT * FROM {$this->table} WHERE id = ?", [$id])->find();
-        $instance = new $this;
-        foreach($record as $key => $value)
+        $id = static::$db->query($query, $params)->lastInserted();
+        $record = $this->find($id);
+
+        return $record;
+    }
+
+    public function delete($id)
+    {
+        $instance = $this->find($id);
+        if (!$instance)
+            return false;
+
+        $query = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = ?";
+        static::$db->query($query, [$id]);
+        return true;
+    }
+
+    protected function createInstanceFromRecord($record)
+    {
+        $instance = new static();
+        foreach ($record as $key => $value) {
             $instance->$key = $value;
-            
+        }
+
         return $instance;
     }
 
     public function __get($property)
     {
-        if (array_key_exists($property, $this->data))
-            return $this->data[$property];
-
-        return null;
+        return $this->data[$property] ?? null;
     }
 
     public function __set($property, $value)

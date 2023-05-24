@@ -7,12 +7,13 @@ class Validator
     public static function make($data, $rules)
     {
         $errors = [];
-        foreach ($rules as $field => $value) {
+        foreach ($rules as $field => $rulesArray) {
             if (array_key_exists($field, $data)) {
-                foreach ($value as $rule) {
-                    $rule = explode(':', $rule);
-                    $rule_name = $rule[0];
-                    $result = static::$rule_name($field, $data[$field], $rule[1] ?? null);
+                foreach ($rulesArray as $rule) {
+                    [$ruleName, $option] = explode(':', $rule . ':');
+
+                    $result = static::$ruleName($field, $data[$field], $option);
+
                     if (is_string($result)) {
                         $errors[$field] = $result;
                     }
@@ -29,12 +30,13 @@ class Validator
     {
         $db = App::resolve(Database::class);
 
-        $option = explode(',', $option);
+        [$table, $column] = explode(',', $option);
 
-        $record = $db->query("SELECT * from $option[0] where $field = '$value'")->exists();
+        $query = "SELECT * from $table where $column = ?";
+        $record = $db->query($query, [$value])->exists();
 
         if ($record)
-            return "Field $field must be unique";
+            return "Field $field must be unique.";
 
         return true;
     }
@@ -42,7 +44,7 @@ class Validator
     public static function required($field, $value)
     {
         if (empty($value))
-            return "Field " . $field . ' is required';
+            return "Field " . $field . ' is required.';
 
         return true;
     }
@@ -50,7 +52,7 @@ class Validator
     public static function string($field, $value)
     {
         if (!is_string($value))
-            return "Field $field must be string";
+            return "Field $field must be string.";
 
         return true;
     }
@@ -58,7 +60,7 @@ class Validator
     public static function email($field, $value)
     {
         if (!filter_var($value, FILTER_VALIDATE_EMAIL))
-            return "Field $field must be email";
+            return "Field $field must be email.";
 
         return true;
     }
@@ -66,7 +68,7 @@ class Validator
     public static function numeric($field, $value)
     {
         if (!is_numeric($value))
-            return "Field $field must be numeric";
+            return "Field $field must be numeric.";
 
         return true;
     }
@@ -74,7 +76,7 @@ class Validator
     public static function array($field, $value)
     {
         if (!is_array($value))
-            return "Field $field must be array";
+            return "Field $field must be array.";
 
         return true;
     }

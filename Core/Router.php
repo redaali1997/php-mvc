@@ -27,10 +27,10 @@ class Router
         $this->add('POST', $uri, $action);
     }
 
-    // public function delete($uri, $controller)
-    // {
-    //     $this->add('DELETE', $uri, $controller);
-    // }
+    public function delete($uri, $action)
+    {
+        $this->add('DELETE', $uri, $action);
+    }
 
     // public function patch($uri, $controller)
     // {

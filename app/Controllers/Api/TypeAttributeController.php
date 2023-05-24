@@ -8,9 +8,12 @@ class TypeAttributeController
 {
     public function index()
     {
-        if (isset($_GET['type_id'])) {
-            $attributes = (new TypeAttribute)->findAllWhere('type_id', $_GET['type_id']);
+        $typeId = $_GET['type_id'] ?? null;
+
+        if ($typeId) {
+            $attributes = (new TypeAttribute)->findAllWhere('type_id', $typeId);
             $collection = [];
+
             foreach($attributes as $attribute)
             {
                 $collection[$attribute->id] = [
@@ -20,6 +23,7 @@ class TypeAttributeController
                 ];
             }
             echo json_encode($collection);
+            return;
         }
 
         echo null;

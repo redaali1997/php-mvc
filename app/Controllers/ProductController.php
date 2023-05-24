@@ -20,10 +20,6 @@ class ProductController
 
     public function index()
     {
-        Session::destoryAll();
-
-        $csrfToken = Token::generateSessionToken();
-
         $products = $this->product->withAttributes();
 
         return view('home', compact('products', 'csrfToken'));
@@ -31,8 +27,6 @@ class ProductController
 
     public function create()
     {
-        $csrfToken = Token::generateSessionToken();
-
         $types = (new Type)->get();
 
         return view('create', compact('types', 'csrfToken'));
@@ -67,23 +61,25 @@ class ProductController
                     'value' => $value
                 ]);
             }
-            Session::destoryAll();
+
             header('location: /', 200);
             exit;
         }
 
-        Session::set('errors', $validator);
-        Session::set('data', $_POST);
+        $types = (new Type)->get();
 
-        header('location: /add-product', 200);
-        exit;
+        return view('create', [
+            'errors' => $validator,
+            'data' => $_POST,
+            'types' => $types
+        ]);
     }
 
     public function delete()
     {
         $products = $_POST['products'];
 
-        foreach($products as $product)
+        foreach ($products as $product)
             $this->product->delete($product);
 
         header('location: /', 200);

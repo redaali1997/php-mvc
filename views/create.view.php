@@ -51,7 +51,7 @@
             <div id="">
                 <div v-for="(attribute, id) in attributes" :key="id">
                     <label class="form-label" :for="attribute['name']" v-text="attribute['name'] + ' (' + attribute['unit'] + ')'"></label>
-                    <input :type="attribute['type']" class="form-control" :id="attribute['name'].toLowerCase()" :name="`attributes[${id}]`" value="<?= $data[''] ?>" required>
+                    <input :type="attribute['type']" class="form-control" :id="attribute['name'].toLowerCase()" :name="`attributes[${id}]`" required>
                     <p v-if="Object.keys(attributes).length < 2" class="mt-2">Please, provide {{ attribute['name'] }}</p>
                 </div>
                 <p v-if="Object.keys(attributes).length > 1" class="mt-2">Please, provide dimensions</p>
@@ -62,4 +62,8 @@
     </form>
 </div>
 
+<script>
+    let type = <?= $data['type_id'] ?? 1 ?>;
+</script>
+<script src="/assets/app.js"></script>
 <?php view('partials/footer') ?>

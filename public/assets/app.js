@@ -3,7 +3,7 @@ const { createApp } = Vue;
 createApp({
   data() {
     return {
-      type: 1,
+      type: type,
       attributes: [],
     };
   },

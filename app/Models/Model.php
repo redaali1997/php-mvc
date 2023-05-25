@@ -5,7 +5,7 @@ namespace app\Models;
 use Core\App;
 use Core\Database;
 
-class Model
+abstract class Model
 {
     protected $table;
     protected $primaryKey = 'id';
